@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: azure-cli
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      tier: azure-cli
+  template:
+    metadata:
+      labels:
+        tier: azure-cli
+    spec:
+      containers:
+      - name: storage-azurite-container
+        image: mcr.microsoft.com/azure-cli
+        command: ["sleep"]
+        args: ["864000"]
+        resources:
+          limits:
+            cpu: 500m
+            memory: 0.5Gi
+          requests:
+            cpu: 500m
+            memory: 0.5Gi
