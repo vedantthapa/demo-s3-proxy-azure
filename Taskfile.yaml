@@ -1,0 +1,66 @@
+version: "3"
+dotenv: [".env"]
+output: prefixed
+silent: true
+
+vars:
+  CHART_NAME: s3-proxy-demo
+  CLUSTER_NAME: "{{.CHART_NAME}}"
+  PROJECT_NAMESPACE: "{{.CHART_NAME}}"
+  CONTEXT_NAME: "k3d-{{.CLUSTER_NAME}}"
+  KUBECTL: "kubectl --context={{.CONTEXT_NAME}}"
+
+tasks:
+  
+  #  _    _____     _
+  # | | _|___ /  __| |
+  # | |/ / |_ \ / _` |
+  # |   < ___) | (_| |
+  # |_|\_\____/ \__,_|
+
+  k3d:create:
+    prefix: ⚙️ > create k3d cluster
+    desc: create k3d cluster
+    cmds:
+    - |
+      if [ "$(k3d cluster list | grep {{.CLUSTER_NAME}})" ]; then
+        echo Cluster {{.CLUSTER_NAME}} already exists
+      else
+        k3d cluster create --config=k3d/config.yaml
+      fi
+
+  k3d:destroy:
+    prefix: ⚙️ > destroy
+    desc: destroy k3d cluster
+    cmds:
+      - "k3d cluster delete {{.CLUSTER_NAME}}"
+
+  k3d:start:
+    prefix: ⚙️ > start
+    desc: starts k3d cluster
+    cmds:
+      - "k3d cluster start {{.CLUSTER_NAME}}"
+
+  k3d:stop:
+    prefix: ⚙️ > stop
+    desc: stops k3d cluster
+    cmds:
+      - "k3d cluster stop {{.CLUSTER_NAME}}"
+
+  #  _    ___      
+  # | | _( _ ) ___ 
+  # | |/ / _ \/ __|
+  # |   < (_) \__ \"
+  # |_|\_\___/|___/
+
+  k8s:install:
+    prefix: ⚙️ > kubectl install
+    desc: install kubernetes manifests
+    cmds:
+      - "kubectl apply -f k8s/ --recursive --context=k3d-{{.CLUSTER_NAME}}"
+
+  k8s:delete:
+    prefix: ⚙️ > kubectl delete
+    desc: install kubernetes manifests
+    cmds:
+      - "kubectl delete -f k8s/ --recursive --context=k3d-{{.CLUSTER_NAME}}"
