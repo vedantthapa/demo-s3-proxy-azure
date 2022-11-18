@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: s3proxy
-          image: {{ .Values.deployment.image }}
+          image: {{ .Values.deployment.registry }}{{ .Values.deployment.image }}
           env:
             # Settings to configure s3proxy with local Azurite backend
             - name: JCLOUDS_PROVIDER

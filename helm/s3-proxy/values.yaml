@@ -3,6 +3,7 @@
 # Declare variables to be passed into your templates.
 
 deployment:
+  registry: "docker.io/"
   image: "andrewgaul/s3proxy"
 
 secret:
