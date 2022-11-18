@@ -16,17 +16,23 @@ spec:
     spec:
       containers:
         - name: s3proxy
-          image: andrewgaul/s3proxy
+          image: {{ .Values.deployment.image }}
           env:
             # Settings to configure s3proxy with local Azurite backend
             - name: JCLOUDS_PROVIDER
               value: azureblob
             - name: JCLOUDS_IDENTITY
-              value: devstoreaccount1
+              valueFrom:
+                secretKeyRef:
+                  name: s3proxy
+                  key: azure_account_name
             - name: JCLOUDS_ENDPOINT
               value: http://storage-azurite-service:10000/devstoreaccount1
             - name: JCLOUDS_CREDENTIAL
-              value: changeme
+              valueFrom:
+                secretKeyRef:
+                  name: s3proxy
+                  key: azure_key
             # Settings to configure s3proxy with filesystem storage backend
             # - name: JCLOUDSS_PROVIDER
             #   value: filesystem
@@ -38,9 +44,15 @@ spec:
             - name: S3PROXY_AUTHORIZATION
               value: aws-v2-or-v4
             - name: S3PROXY_IDENTITY
-              value: changeme
+              valueFrom:
+                secretKeyRef:
+                  name: s3proxy
+                  key: access_key
             - name: S3PROXY_CREDENTIAL
-              value: changeme
+              valueFrom:
+                secretKeyRef:
+                  name: s3proxy
+                  key: secret_key
           resources:
             limits:
               cpu: 500m
