@@ -1,0 +1,14 @@
+# Default values for s3-proxy.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+deployment:
+  registry: "docker.io/"
+  image: "andrewgaul/s3proxy"
+
+secret:
+  url: http://s3proxy:8080
+  access_key: changeme
+  secret_key: changeme
+  azure_account_name: devstoreaccount1
+  azure_key: changeme

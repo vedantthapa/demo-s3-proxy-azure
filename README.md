@@ -35,13 +35,29 @@ See the [following instructions](https://github.com/gaul/s3proxy/issues/262#issu
 
 Open a shell into the `mc-cli` pod (this pod has the [minio client](https://github.com/minio/mc) installed into the main container, which can be used to make s3 API calls).
 
-Create an alias for the s3proxy instance with the following: `mc alias set s3proxy http://s3proxy:8080 changeme changeme` 
+Create an alias for the s3proxy instance with the following: 
 
-Create a new bucket called `tmp` with `mc mb s3proxy/tmp`
+```bash
+mc alias set s3proxy http://s3proxy:8080 changeme changeme
+```
 
-Upload a file to the bucket: `echo test1 > test1.txt && mc cp test1.txt s3proxy/tmp/test1.txt`
+Create a new bucket called `tmp` with: 
 
-Verify that the file was uploaded successfully with `mc cat s3proxy/tmp/test1.txt`
+```bash
+mc mb s3proxy/tmp
+```
+
+Upload a file to the bucket:
+
+```bash
+echo test1 > test1.txt && mc cp test1.txt s3proxy/tmp/test1.txt
+```
+
+Verify that the file was uploaded successfully with: 
+
+```bash
+mc cat s3proxy/tmp/test1.txt
+```
 
 # References
 

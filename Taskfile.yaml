@@ -58,9 +58,11 @@ tasks:
     desc: install kubernetes manifests
     cmds:
       - "kubectl apply -f k8s/ --recursive --context=k3d-{{.CLUSTER_NAME}}"
+      - "helm install s3-proxy helm/s3-proxy"
 
   k8s:delete:
     prefix: ⚙️ > kubectl delete
     desc: install kubernetes manifests
     cmds:
       - "kubectl delete -f k8s/ --recursive --context=k3d-{{.CLUSTER_NAME}}"
+      - "helm uninstall s3-proxy"

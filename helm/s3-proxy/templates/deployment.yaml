@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: s3proxy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      tier: backend
+      app: s3proxy
+  template:
+    metadata:
+      labels:
+        tier: backend
+        app: s3proxy
+    spec:
+      containers:
+        - name: s3proxy
+          image: {{ .Values.deployment.registry }}{{ .Values.deployment.image }}
+          env:
+            # Settings to configure s3proxy with local Azurite backend
+            - name: JCLOUDS_PROVIDER
+              value: azureblob
+            - name: JCLOUDS_IDENTITY
+              valueFrom:
+                secretKeyRef:
+                  name: s3proxy
+                  key: azure_account_name
+            - name: JCLOUDS_ENDPOINT
+              value: http://storage-azurite-service:10000/devstoreaccount1
+            - name: JCLOUDS_CREDENTIAL
+              valueFrom:
+                secretKeyRef:
+                  name: s3proxy
+                  key: azure_key
+            # Settings to configure s3proxy with filesystem storage backend
+            # - name: JCLOUDSS_PROVIDER
+            #   value: filesystem
+            # - name: JCLOUDS_FILESYSTEM_BASEDIR
+            #   value: /tmp/s3proxy
+            # Settings to configure s3proxy
+            - name: S3PROXY_ENDPOINT
+              value: http://0.0.0.0:8080
+            - name: S3PROXY_AUTHORIZATION
+              value: aws-v2-or-v4
+            - name: S3PROXY_IDENTITY
+              valueFrom:
+                secretKeyRef:
+                  name: s3proxy
+                  key: access_key
+            - name: S3PROXY_CREDENTIAL
+              valueFrom:
+                secretKeyRef:
+                  name: s3proxy
+                  key: secret_key
+          resources:
+            limits:
+              cpu: 500m
+              memory: 1Gi
+            requests:
+              cpu: 500m
+              memory: 1Gi
+          ports:
+            - containerPort: 8080
